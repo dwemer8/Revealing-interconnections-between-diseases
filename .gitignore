@@ -6,3 +6,10 @@ notebooks/
 *-checkpoint*
 medbert/diagnoses_icd10.csv
 medbert/icd10_categories_descriptions.csv
+**/*.log
+**/*.zip
+medbert/similarity_scores.csv
+medbert/bert_embeddings.tsv
+medbert/kernel_meta/*
+medbert/bert-base-uncased/*
+**/*.png
