@@ -1,3 +1,7 @@
-data/
+data/*
+!data/mimic-4
+data/mimic-4/*
+!data/mimic-4/2018_I9gem.txt
 notebooks/
 *-checkpoint*
+medbert/diagnoses_icd10.csv
