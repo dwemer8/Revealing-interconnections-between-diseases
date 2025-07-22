@@ -13,3 +13,5 @@ medbert/bert_embeddings.tsv
 medbert/kernel_meta/*
 medbert/bert-base-uncased/*
 **/*.png
+statistic/cat_co_matrix_conditional_prob.csv
+mlm/mlm_results.csv
