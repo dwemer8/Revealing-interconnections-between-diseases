@@ -5,3 +5,4 @@ data/mimic-4/*
 notebooks/
 *-checkpoint*
 medbert/diagnoses_icd10.csv
+medbert/icd10_categories_descriptions.csv
