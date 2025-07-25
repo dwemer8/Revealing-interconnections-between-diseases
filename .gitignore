@@ -15,3 +15,5 @@ medbert/bert-base-uncased/*
 **/*.png
 statistic/cat_co_matrix_conditional_prob.csv
 mlm/mlm_results.csv
+llm/log.txt
+llm/logs/*
