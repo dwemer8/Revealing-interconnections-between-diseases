@@ -3,8 +3,10 @@ from tqdm import tqdm
 import json
 from openai import OpenAI
 
+responses_path = "responses_qwen.tsv"
+log_dir = "logs_qwen/"
 api_url = "https://api.modelarts-maas.com/v1/chat/completions"
-model = "DeepSeek-V3"
+model = "qwen3-235b-a22b"# "DeepSeek-V3"
 with open("api_key.txt", "r") as f: api_key = f.readline().strip()
 
 base_url = "https://api.modelarts-maas.com/v1" # API URL
@@ -65,7 +67,7 @@ def get_scores(codes):
                 
                 scores.loc[row_i["icd10_category"], row_j["icd10_category"]] = response.choices[0].message.content
                 
-                with open("logs/{}_{}.txt".format(row_i["icd10_category"], row_j["icd10_category"]), "w") as f: json.dump({"query": query, "response": response.choices[0].message.content}, f)
+                with open("{}/{}_{}.txt".format(log_dir, row_i["icd10_category"], row_j["icd10_category"]), "w") as f: json.dump({"query": query, "response": response.choices[0].message.content}, f)
                 
         return scores
 
@@ -95,7 +97,7 @@ def get_responses_multi(codes):
 
             scores.loc[row["icd10_category"], "response"] = response.choices[0].message.content
 
-            with open("logs/{}.txt".format(row["icd10_category"]), "w") as f: json.dump({"query": query, "response": response.choices[0].message.content}, f)
+            with open("{}/{}.txt".format(log_dir, row["icd10_category"]), "w") as f: json.dump({"query": query, "response": response.choices[0].message.content}, f)
                 
         return scores
 
@@ -106,7 +108,7 @@ def get_responses_multi(codes):
 codes = pd.read_csv("icd10_categories_descriptions.csv").drop("Unnamed: 0", axis=1)
 
 responses = get_responses_multi(codes)
-responses.to_csv("responses.tsv", sep="\t")
+responses.to_csv(responses_path, sep="\t")
 
 # scores = get_scores(codes[:10])
 # scores.to_csv("scores.tsv", sep="\t")
