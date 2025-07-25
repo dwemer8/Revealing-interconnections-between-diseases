@@ -17,3 +17,8 @@ statistic/cat_co_matrix_conditional_prob.csv
 mlm/mlm_results.csv
 llm/log.txt
 llm/logs/*
+llm/logs2/*
+llm/logs_qwen/*
+llm/*.txt
+llm/responses*
+llm/scores*
