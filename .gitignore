@@ -22,3 +22,7 @@ llm/logs_qwen/*
 llm/*.txt
 llm/responses*
 llm/scores*
+llm/pics*
+llm/logs_*.txt
+llm/logs_qwen3-235b-a22b_1/*
+nohup.out
