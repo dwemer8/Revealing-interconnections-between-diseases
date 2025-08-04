@@ -25,7 +25,7 @@ TEMPLATE_MULTI = """{{
     description: {},
 }}"""
     
-def get_responses_multi(codes, log_dir="logs/"):
+def get_responses_multi(codes, log_dir="logs/", n_attempts=10):
     try:
         scores = pd.DataFrame(data=["null" for _ in range(len(codes))], index=codes["icd10_category"].values, columns=["response"])
 
@@ -35,17 +35,23 @@ def get_responses_multi(codes, log_dir="logs/"):
                 row["description"], 
             )
 
-            response = client.chat.completions.create(
-                model = model, # model Parameter
-                messages = [
-                    {"role": "system", "content": SYSTEM_PROMPT_MULTI},
-                    {"role": "user", "content": query},
-                ],
-                temperature = 0.3,
-                stream = False
-            )
-
-            scores.loc[row["icd10_category"], "response"] = response.choices[0].message.content
+            for i in range(n_attempts):
+                try:
+                    response = client.chat.completions.create(
+                        model = model, # model Parameter
+                        messages = [
+                            {"role": "system", "content": SYSTEM_PROMPT_MULTI},
+                            {"role": "user", "content": query},
+                        ],
+                        temperature = 0.3,
+                        stream = False
+                    )
+                    scores.loc[row["icd10_category"], "response"] = response.choices[0].message.content
+                    break
+                    
+                except Exception as e:
+                    print("Attempt {} for code {}".format(i+1, row["icd10_category"]))
+                    print(e)
 
             if not os.path.exists(log_dir): os.makedirs(log_dir)
             with open("{}/{}.txt".format(log_dir, row["icd10_category"]), "w") as f: json.dump({"query": query, "response": response.choices[0].message.content}, f)
@@ -59,11 +65,11 @@ def get_responses_multi(codes, log_dir="logs/"):
 codes = pd.read_csv("icd10_categories_descriptions.csv").drop("Unnamed: 0", axis=1)
 
 for model in tqdm([
-        "DeepSeek-V3",
+        # "DeepSeek-V3",
         "qwen3-235b-a22b", 
         # "qwen3-32b",
     ]):
-    for i in range(2):
+    for i in range(2, 3):
         print(f"Getting responses from {model}")
         responses = get_responses_multi(codes, log_dir=f"logs_{model}_{i}/")
         responses.to_csv(f"responses_{model}_{i}.tsv", sep="\t")
