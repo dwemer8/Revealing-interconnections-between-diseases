@@ -1,0 +1,6 @@
+defaults:
+  - common@: default
+
+experiment_name: "sklearn_test"
+model: "sklearn"
+verbose: 3

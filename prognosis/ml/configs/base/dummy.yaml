@@ -1,0 +1,5 @@
+defaults:
+  - common@: default
+
+experiment_name: "dummy_test"
+model: "dummy"

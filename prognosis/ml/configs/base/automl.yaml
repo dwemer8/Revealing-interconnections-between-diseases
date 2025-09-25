@@ -1,0 +1,5 @@
+defaults:
+  - common@: default
+
+experiment_name: "automl_test"
+model: "automl"

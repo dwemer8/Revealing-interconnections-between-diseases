@@ -1,0 +1,7 @@
+results_path: "results.csv"
+n_folds: 5
+random_state: 42
+target_col: "Y"
+ci: True
+n_bootstraps: 1000
+log_path: "logs"

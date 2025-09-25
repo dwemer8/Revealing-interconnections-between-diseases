@@ -1,3 +1,13 @@
+prognosis/ml/*.csv
+prognosis/ml/data/embeddings*
+prognosis/ml/data/*.tsv
+prognosis/ml/data/*.csv
+prognosis/ml/models*
+*__pycache__*
+*lama_reports*
+*multirun*
+*code-workspace
+.venv*
 data/*
 !data/mimic-4
 data/mimic-4/*

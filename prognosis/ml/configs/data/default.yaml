@@ -1,0 +1,9 @@
+work_dir: "data/"
+nosology: "C61"
+dataset_suffix: "_deepseek-ai_DeepSeek-V3_features.csv"
+separator: ","
+id_col: "subject_id"
+group_col: "group" #"train"/"test"
+label_cols:
+  - "Y"
+dummy_cols: false

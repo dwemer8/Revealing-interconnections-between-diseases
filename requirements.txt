@@ -1,0 +1,13 @@
+numpy
+pandas
+scipy
+matplotlib
+seaborn
+requests
+
+scikit-learn
+torch
+tqdm
+
+openai
+simple-icd-10

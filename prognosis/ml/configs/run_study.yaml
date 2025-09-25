@@ -1,0 +1,26 @@
+defaults: 
+  - model: automl
+  - base: automl
+  - data: default
+  - override hydra/sweeper: optuna
+  - override hydra/sweeper/sampler: grid
+  - _self_  
+
+hydra:
+  mode: MULTIRUN
+  sweeper:
+    direction: maximize #!!! CHECK BEFORE LAUNCH !!!
+    study_name: ${base.experiment_name}
+    storage: null
+    n_trials: 3
+    n_jobs: 1
+    # max_failure_rate: 0.0
+    params:
+      data.dataset_suffix: choice("_deepseek-ai_DeepSeek-V3_features.csv", "_Qwen_Qwen3-235B-A22B-Instruct-2507_features.csv", "_yandex_YandexGPT-5-Lite-8B-instruct_features.csv")
+      
+base:
+  experiment_name: "automl_pr_auc_${data.nosology}${data.dataset_suffix}"
+
+model:
+  timeout: ${eval:'60*60'}[]
+

@@ -1,0 +1,4 @@
+defaults: 
+    - model: automl
+    - base: automl
+    - data: default
