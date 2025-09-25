@@ -11,3 +11,8 @@ tqdm
 
 openai
 simple-icd-10
+
+lightautoml[nlp]
+hydra-core
+optuna
+hydra-optuna-sweeper

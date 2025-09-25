@@ -16,7 +16,7 @@ hydra:
     n_jobs: 1
     # max_failure_rate: 0.0
     params:
-      data.dataset_suffix: choice("_deepseek-ai_DeepSeek-V3_features.csv", "_Qwen_Qwen3-235B-A22B-Instruct-2507_features.csv", "_yandex_YandexGPT-5-Lite-8B-instruct_features.csv")
+      data.dataset_suffix: choice("_deepseek-ai_DeepSeek-V3_features_max.csv", "_Qwen_Qwen3-235B-A22B-Instruct-2507_features_max.csv", "_yandex_YandexGPT-5-Lite-8B-instruct_features_max.csv")
       
 base:
   experiment_name: "automl_pr_auc_${data.nosology}${data.dataset_suffix}"
