@@ -1,0 +1,1 @@
+df = df[["base.experiment_name", "data.nosology", "base.target_col", "test.average_precision", "test.average_precision.e_95", "test.f1_max", "test.f1_max.se", "test_distribution", "train_shape", "test_shape", "walltime"]]

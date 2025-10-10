@@ -1,4 +1,4 @@
-work_dir: "data/"
+work_dir: "data/datasets/"
 nosology: "C61"
 dataset_suffix: "_deepseek-ai_DeepSeek-V3_features.csv"
 separator: ","

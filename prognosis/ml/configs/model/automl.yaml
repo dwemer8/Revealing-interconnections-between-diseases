@@ -1,6 +1,6 @@
 metric: average_precision_score
 
-timeout: ${eval:'60*60*12'} #60*60*6
+timeout: ${eval:'60*60*24*5'} #60*60*6
 cpu_limit: 16
 memory_limit: 128
 
@@ -8,8 +8,8 @@ reader_params:
   n_jobs: 16
 
 tuning_params:
-  'max_tuning_time': 1800   
-  'max_tuning_iter': 200
+  'max_tuning_time': ${eval:'3600*24'} 
+  'max_tuning_iter': 100
 
 # general_params:
 #   use_algos:

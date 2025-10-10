@@ -2,25 +2,41 @@ defaults:
   - model: automl
   - base: automl
   - data: default
-  - override hydra/sweeper: optuna
-  - override hydra/sweeper/sampler: grid
+  # - override hydra/sweeper: optuna
+  # - override hydra/sweeper/sampler: grid
   - _self_  
 
 hydra:
   mode: MULTIRUN
   sweeper:
-    direction: maximize #!!! CHECK BEFORE LAUNCH !!!
-    study_name: ${base.experiment_name}
-    storage: null
-    n_trials: 3
-    n_jobs: 1
+    # direction: maximize #!!! CHECK BEFORE LAUNCH !!!
+    # study_name: ${base.experiment_name}
+    # storage: null
+    # n_trials: 6
+    # n_jobs: 1
     # max_failure_rate: 0.0
+    _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
     params:
-      data.dataset_suffix: choice("_baseline_features.csv") #choice("_deepseek-ai_DeepSeek-V3_features_max.csv", "_Qwen_Qwen3-235B-A22B-Instruct-2507_features_max.csv", "_yandex_YandexGPT-5-Lite-8B-instruct_features_max.csv")
+      data.dataset_suffix: >-
+        _deepseek-ai_DeepSeek-V3_features_mean.csv,
+        _Qwen_Qwen3-235B-A22B-Instruct-2507_features_mean.csv,
+        _yandex_YandexGPT-5-Lite-8B-instruct_features_mean.csv
+
+# _openai_gpt-oss-120b_Low_features_mean.csv,
+# _openai_gpt-oss-120b_Medium_features_mean.csv,
+# _openai_gpt-oss-120b_High_features_mean.csv,
+# _openai_gpt-oss-20b_Low_features_mean.csv,
+# _openai_gpt-oss-20b_Medium_features_mean.csv,
+# _openai_gpt-oss-20b_High_features_mean.csv,
+# _openai_gpt-oss-120b_Low_features_max.csv,
+# _openai_gpt-oss-120b_Medium_features_max.csv,
+# _openai_gpt-oss-120b_High_features_max.csv,
+# _openai_gpt-oss-20b_Low_features_max.csv,
+# _openai_gpt-oss-20b_Medium_features_max.csv,
+# _openai_gpt-oss-20b_High_features_max.csv,
+# _deepseek-ai_DeepSeek-V3_features_max.csv,
+# _Qwen_Qwen3-235B-A22B-Instruct-2507_features_max.csv,
+# _yandex_YandexGPT-5-Lite-8B-instruct_features_max.csv 
       
 base:
-  experiment_name: "automl_pr_auc_${data.nosology}${data.dataset_suffix}"
-
-model:
-  timeout: ${eval:'60*60'}
-
+  experiment_name: "automl_pr_auc_time_unbounded_${data.nosology}${data.dataset_suffix}"

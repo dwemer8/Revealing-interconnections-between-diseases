@@ -1,5 +1,9 @@
+mlm/*.csv
+prognosis/cehrbert*
+llm/outputs*
 prognosis/ml/*.csv
-prognosis/ml/data/embeddings*
+prognosis/ml/data/embeddings/*
+prognosis/ml/data/datasets*
 prognosis/ml/data/*.tsv
 prognosis/ml/data/*.csv
 prognosis/ml/models*
