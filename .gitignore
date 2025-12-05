@@ -1,6 +1,7 @@
 mlm/*.csv
 prognosis/cehrbert*
 llm/outputs*
+llm/outputs_mcq*
 prognosis/ml/*.csv
 prognosis/ml/data/embeddings/*
 prognosis/ml/data/datasets*
@@ -33,6 +34,7 @@ llm/log.txt
 llm/logs/*
 llm/logs2/*
 llm/logs_qwen/*
+llm/logs_mcq/*
 llm/*.txt
 llm/responses*
 llm/scores*
