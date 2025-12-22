@@ -142,9 +142,11 @@ if __name__ == "__main__":
     parser.add_argument("--input-csv", type=str, default="icd10_categories_descriptions.csv",
                        help="Path to input CSV file with ICD-10 categories")
     parser.add_argument("--max_categories", type=int, default=None,
-                        help="Maximum number of categories to process")
+                        help="Maximum number of categories to process. Only for debugging purposes.")
     parser.add_argument("--code", type=str, default=None, 
-                        help="Code to process ('R18', for example); if not specified, all codes will be processed")
+                        help="Code to process ('R18', for example); if not specified, all codes will be processed.")
+    parser.add_argument("--codes", nargs='+', 
+                        help="List of codes to process (space separated); if not specified, all codes will be processed.")
     
     args = parser.parse_args()
 
@@ -153,10 +155,10 @@ if __name__ == "__main__":
     else: 
         print("CUDA is not available")
     
-    print(torch.cuda.memory_allocated()/1024**3, "GB")
+    print("CUDA memory allocated:", torch.cuda.memory_allocated()/1024**3, "GB")
     gc.collect()          # run Python garbage collector
     torch.cuda.empty_cache()  # free cached memory to the OS
-    print(torch.cuda.memory_allocated()/1024**3, "GB")
+    print("CUDA memory allocated after emptying:", torch.cuda.memory_allocated()/1024**3, "GB")
 
     codes = pd.read_csv(args.input_csv).drop("Unnamed: 0", axis=1, errors="ignore")
     if args.max_categories is not None:
@@ -176,10 +178,16 @@ if __name__ == "__main__":
     for i in range(args.iterations):
         inferer.set_system_message(reasoning_effort, "2025-06-28")
         print(f"Getting responses from {model_size} with reasoning effort {reasoning_effort} on iteration {i}")
-        if args.code is None:
+        if args.code is None and args.codes is None:
             responses = get_responses_mcq(codes, inferer, log_dir=f"logs_mcq/logs_{model_size}_{reasoning_effort}_{i}/")
             responses.to_csv(f"{OUTPUTS_DIR}/responses_{model_size}_{reasoning_effort}_{i}.tsv", sep="\t")
-        else:
+        
+        elif args.codes is not None:
+            for code in args.codes:
+                responses = get_responses_mcq_for_single_code(code, codes, inferer, log_dir=f"logs_mcq/logs_{model_size}_{reasoning_effort}_{i}/")
+                responses.to_csv(f"{OUTPUTS_DIR}/responses_{model_size}_{reasoning_effort}_{code}_{i}.tsv", sep="\t")
+                
+        elif args.code is not None:
             responses = get_responses_mcq_for_single_code(args.code, codes, inferer, log_dir=f"logs_mcq/logs_{model_size}_{reasoning_effort}_{i}/")
             responses.to_csv(f"{OUTPUTS_DIR}/responses_{model_size}_{reasoning_effort}_{args.code}_{i}.tsv", sep="\t")
 

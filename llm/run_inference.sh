@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=3 python infer_gpt_oss_pair_by_pair.py --codes C34 C50 C25 C22 C18 C64 C80 C83 C91 #C67 C92 C90 C71 C54 C16 C56 C73 C15 C20
