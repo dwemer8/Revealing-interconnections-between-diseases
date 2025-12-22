@@ -44,6 +44,7 @@ llm/logs_*.txt
 llm/logs_qwen3-235b-a22b_1/*
 nohup.out
 matrices_comparison/*.csv
-matrices_comparison/matrix/
 *__MACOSX*
-matrices_comparison/matrices/*
+matrices_comparison/matrices
+matrices_comparison/matrix
+matrices_comparison/relevant_matrices
