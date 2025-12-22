@@ -1,3 +1,4 @@
+*.pt
 mlm/*.csv
 prognosis/cehrbert*
 llm/outputs*
