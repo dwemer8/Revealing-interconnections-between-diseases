@@ -17,8 +17,17 @@ A patient known to have been assigned ICD-category {X} is ...
 [B] not likely to have {Y}. 
 Answer with one letter only (A or B)."""
 
-def get_response(inferer, c1, c2, d1, d2, log_dir, n_attempts):
-    query = TEMPLATE_MCQ.format(
+TEMPLATE_MCQ_WITH_RANDOM = """ICD-10 category {X} is {X_description}. ICD-10 category {Y} is {Y_description}. Based on this, answer the following multiple-choice question: 
+A patient known to have been assigned ICD-category {X} is ... 
+[A] as likely to have {Y} as a random patient;
+[B] more likely to have {Y} than a random patient; 
+[C] less likely to have {Y} than a random patient. 
+Answer with one letter only (A, B or C)."""
+
+
+
+def get_response(inferer, c1, c2, d1, d2, log_dir, n_attempts, template):
+    query = template.format(
         X=c1, 
         X_description=d1, 
         Y=c2, 
@@ -42,7 +51,13 @@ def get_response(inferer, c1, c2, d1, d2, log_dir, n_attempts):
 
     return final_answer
 
-def get_responses_mcq(codes: pd.DataFrame, inferer : GPT_OSS_Inference, log_dir="logs/", n_attempts=10):
+def get_responses_mcq(
+    codes: pd.DataFrame, 
+    inferer : GPT_OSS_Inference, 
+    log_dir="logs/", 
+    n_attempts=10, 
+    template=TEMPLATE_MCQ
+):
     try:
         scores = pd.DataFrame()
 
@@ -62,6 +77,7 @@ def get_responses_mcq(codes: pd.DataFrame, inferer : GPT_OSS_Inference, log_dir=
                                 row2["description"], 
                                 log_dir,
                                 n_attempts, 
+                                template
                             )
                         }])
                     ], 
@@ -76,7 +92,14 @@ def get_responses_mcq(codes: pd.DataFrame, inferer : GPT_OSS_Inference, log_dir=
         logging.exception(e)
         return scores
     
-def get_responses_mcq_for_single_code(code: str, codes: pd.DataFrame, inferer : GPT_OSS_Inference, log_dir="logs/", n_attempts=10):
+def get_responses_mcq_for_single_code(
+    code: str, 
+    codes: pd.DataFrame, 
+    inferer : GPT_OSS_Inference, 
+    log_dir="logs/", 
+    n_attempts=10, 
+    template=TEMPLATE_MCQ
+):
     try:
         scores = pd.DataFrame()
 
@@ -95,6 +118,7 @@ def get_responses_mcq_for_single_code(code: str, codes: pd.DataFrame, inferer : 
                             row["description"], 
                             log_dir,
                             n_attempts, 
+                            template
                         )
                     }])
                 ], 
@@ -117,6 +141,7 @@ def get_responses_mcq_for_single_code(code: str, codes: pd.DataFrame, inferer : 
                             codes[codes["icd10_category"] == code].iloc[0].loc["description"],
                             log_dir,
                             n_attempts, 
+                            template
                         )
                     }])
                 ], 
@@ -147,6 +172,8 @@ if __name__ == "__main__":
                         help="Code to process ('R18', for example); if not specified, all codes will be processed.")
     parser.add_argument("--codes", nargs='+', 
                         help="List of codes to process (space separated); if not specified, all codes will be processed.")
+    parser.add_argument("--prompt_with_random", action="store_true", default=False,
+                        help="Whether to use prompt with refering to probability of a random patient")
     
     args = parser.parse_args()
 
@@ -174,21 +201,39 @@ if __name__ == "__main__":
 
     OUTPUTS_DIR = "outputs_mcq"
     if not os.path.exists(OUTPUTS_DIR): os.makedirs(OUTPUTS_DIR)
+
+    template = TEMPLATE_MCQ_WITH_RANDOM if args.prompt_with_random else TEMPLATE_MCQ
+    responses_save_path = f"{OUTPUTS_DIR}/responses_{model_size}_{reasoning_effort}{'_w_rnd_lvl' if args.prompt_with_random else ''}"
+    logs_save_path = f"logs_mcq/logs_{model_size}_{reasoning_effort}{'_w_rnd_lvl' if args.prompt_with_random else ''}"
     
     for i in range(args.iterations):
         inferer.set_system_message(reasoning_effort, "2025-06-28")
         print(f"Getting responses from {model_size} with reasoning effort {reasoning_effort} on iteration {i}")
         if args.code is None and args.codes is None:
-            responses = get_responses_mcq(codes, inferer, log_dir=f"logs_mcq/logs_{model_size}_{reasoning_effort}_{i}/")
-            responses.to_csv(f"{OUTPUTS_DIR}/responses_{model_size}_{reasoning_effort}_{i}.tsv", sep="\t")
+            responses = get_responses_mcq(
+                codes, 
+                inferer, 
+                log_dir=logs_save_path+f"_{i}/",
+                template=template
+            )
+            responses.to_csv(f"{responses_save_path}_{i}.tsv", sep="\t")
         
-        elif args.codes is not None:
-            for code in args.codes:
-                responses = get_responses_mcq_for_single_code(code, codes, inferer, log_dir=f"logs_mcq/logs_{model_size}_{reasoning_effort}_{i}/")
-                responses.to_csv(f"{OUTPUTS_DIR}/responses_{model_size}_{reasoning_effort}_{code}_{i}.tsv", sep="\t")
-                
-        elif args.code is not None:
-            responses = get_responses_mcq_for_single_code(args.code, codes, inferer, log_dir=f"logs_mcq/logs_{model_size}_{reasoning_effort}_{i}/")
-            responses.to_csv(f"{OUTPUTS_DIR}/responses_{model_size}_{reasoning_effort}_{args.code}_{i}.tsv", sep="\t")
+        else:
+            if args.codes is not None:
+                codes_to_process = args.codes
+            elif args.code is not None:
+                codes_to_process = [args.code]
+            else:
+                raise ValueError("Either --codes or --code must be specified in this branch")
+            
+            for code in codes_to_process:
+                responses = get_responses_mcq_for_single_code(
+                    code, 
+                    codes, 
+                    inferer, 
+                    log_dir=logs_save_path+f"_{i}/",
+                    template=template
+                )
+                responses.to_csv(f"{responses_save_path}_{code}_{i}.tsv", sep="\t")
 
         
