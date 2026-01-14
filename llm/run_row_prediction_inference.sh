@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=3 python infer_gpt_oss.py --prompt_with_random
