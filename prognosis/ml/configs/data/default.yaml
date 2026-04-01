@@ -1,5 +1,5 @@
 work_dir: "data/datasets/"
-nosology: "C61"
+nosology: "C34"
 dataset_suffix: "_deepseek-ai_DeepSeek-V3_features.csv"
 separator: ","
 id_col: "subject_id"

@@ -17,11 +17,11 @@ hydra:
     # max_failure_rate: 0.0
     _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
     params:
+      data.nosology: "C34"
       data.dataset_suffix: >-
-        _deepseek-ai_DeepSeek-V3_features_mean.csv,
-        _Qwen_Qwen3-235B-A22B-Instruct-2507_features_mean.csv,
-        _yandex_YandexGPT-5-Lite-8B-instruct_features_mean.csv
-
+        _random_4096_features.csv
+        
+#_baseline_features.csv
 # _openai_gpt-oss-120b_Low_features_mean.csv,
 # _openai_gpt-oss-120b_Medium_features_mean.csv,
 # _openai_gpt-oss-120b_High_features_mean.csv,
